@@ -3,8 +3,7 @@ from bs4 import BeautifulSoup
 from urllib.parse import urljoin, urlparse
 
 ###
-# Web Scraper for the Sekurak Hash Cracking challenge.
-# It has the task of preparing data with certain parameters, which are to be further used to train the GTP-2 model. 
+# A food maker for the GTP-2 training
 ###
 
 url = 'https://xyz.domain'		# url target
@@ -37,9 +36,7 @@ def normalize_text(text):
 	# normalize text for the Sekurak Hash Crack challenge requirements:
 	# - only sentences consisting of precisely 5 words, without Polish characters
     text = re.sub(r'[ąćęłńóśżź]', lambda x: {'ą':'a', 'ć':'c', 'ę':'e', 'ł':'l', 'ń':'n', 'ó':'o', 'ś':'s', 'ż':'z', 'ź':'z'}[x.group()], text)
-    text = re.sub(r'[^a-zA-Z\s]', '', text)
-    text = text.lower()
-    words = text.split()
+    text = re.sub(r'[^a-zA-Z\s]', '', text).lower().split()
     sentences = [' '.join(words[i:i+5]) for i in range(0, len(words), 5) if len(words[i:i+5]) == 5]
     return sentences
 
@@ -66,12 +63,13 @@ def main(url, depth=link_depth):
                     for link in links:
                         queue.append((link, current_depth + 1))
     
-    return normalize_text(data)
+    # return normalize_text(data)
+    return data
 
 if __name__ == "__main__":
 	collected_data = main(url)
 
-	print('\n'.join(collected_data[:10]))		# restrict output by number of lines 
-	# print('\n'.join(collected_data))			# output
+	# print('\n'.join(collected_data[:10]))		# restrict output by number of lines 
+	print('\n'.join(collected_data))			# output
 
 
