@@ -31,22 +31,23 @@ def extract_urls(soup, base_url):
     for a in soup.find_all('a', href=True):
         full_url = urljoin(base_url, a['href'])
         urls.append(full_url)
+
     return urls
 
 def fetch_html(url):
     try:
-        response = requests.get(url, timeout=10)
-        response.raise_for_status()
+        response = requests.get(url, timeout=10).raise_for_status()
         if response.headers['Content-Type'].lower().startswith('text/html'):
             return response.text
     except requests.RequestException as err:
         print(f"Error fetching {url}: {err}")
+
     return None
 
 def extract_sentences(html, mode='no_restriction', min_len=0, max_len=0, exact_len=0):
-    soup = BeautifulSoup(html, 'html.parser')
-    text = soup.get_text()
+    soup = BeautifulSoup(html, 'html.parser').get_text()
     sentences = []
+
     if mode == 'no_restriction':
         sentences = re.findall(r'\b[A-Z][a-z]*\b(?: \b[a-z]+\b)+\.', text)
     elif mode == 'range':
@@ -55,11 +56,12 @@ def extract_sentences(html, mode='no_restriction', min_len=0, max_len=0, exact_l
     elif mode == 'exact':
         pattern = r'\b[A-Z][a-z]*\b(?: \b[a-z]+\b){' + str(exact_len - 1) + r'}\.'
         sentences = re.findall(pattern, text)
+
     return sentences
 
 def go_scrape(scrape_urls, max_depth, delay, mode, min_len=0, max_len=0, exact_len=0):
     visited = set()
-    to_visit = [(url, 0) for url in scrape_urls]
+    to_visit = [(url, 0) for url in scrape_urls] # (url, depth)
     sentences = []
 
     while to_visit:
