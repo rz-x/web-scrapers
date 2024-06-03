@@ -3,7 +3,7 @@ from bs4 import BeautifulSoup
 from urllib.parse import urljoin, urlparse
 
 ###
-# A food maker for the GTP-2 training
+# A food maker for the GTP-2 trainer (pre-stage)
 ###
 
 url = 'https://xyz.domain'		# url target
